@@ -62,5 +62,12 @@ func main() {
 	FirstMatrix.setElement(3,2,7)
 	FirstMatrix.setElement(2,1,9)
 	FirstMatrix.printMatrix()
+
+	SecondMatrix:=Matrix{noOfRows: 4,noOfColumns: 3}
+	SecondMatrix=SecondMatrix.initialize()
+	SecondMatrix.setElement(0,0,4)
+
+	FirstMatrix=FirstMatrix.addingMatrix(FirstMatrix,SecondMatrix)
+	FirstMatrix.printMatrix()
 }
 
