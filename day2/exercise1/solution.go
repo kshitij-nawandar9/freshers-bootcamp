@@ -2,35 +2,32 @@ package main
 
 import (
 	"fmt"
-	"sync"
 )
-
-var state = make(map[string]int)
-
-func parseWord(wordChannel <-chan string, wg *sync.WaitGroup) {
-	word:=<-wordChannel
-	fmt.Println("in routine for ",word)
-	var mutex = &sync.Mutex{}
-	defer wg.Done()
-	for _,char := range word{
-		mutex.Lock()
-		state[string(char)]++
-		mutex.Unlock()
-	}
-}
 
 func main() {
 	words := [5]string {"quick","brown","fox","lazy","dog"}
+	var state = make(map[string]int)
 
-	var wg sync.WaitGroup
-	wordChannel := make(chan string, 1)
+	charChannel := make(chan string)
+
+	go func() {
+		for{
+			char,done:=<-charChannel
+			if done{
+				state[char]++
+			} else{
+				return
+			}
+
+		}
+	}()
 
 	for _,word := range words{
-		wordChannel<-word
-		wg.Add(1)
-		go parseWord(wordChannel,&wg)
+		for _,char := range word{
+			charChannel<-string(char)
+		}
 	}
+
 	//time.Sleep(5*time.Second)
-	wg.Wait()
 	fmt.Println(state)
 }
