@@ -2,7 +2,7 @@
 package Routes
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kshitij-nawandar9/freshers-bootcamp/day3/first-api/Controllers"
+	"github.com/kshitij-nawandar9/freshers-bootcamp/day3/exercise2/Controllers"
 )
 //SetupRouter ... Configure routes
 func SetupRouter() *gin.Engine {
