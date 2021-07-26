@@ -8,32 +8,32 @@ import (
 )
 
 func AddOrder(order *Order) (err error) {
-	if err = Config.DB_orders.Create(order).Error; err != nil {
+	if err = Config.DB.Table("orders").Create(order).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func GetOrderByID(order *Order, id string) (err error) {
-	if err = Config.DB_orders.Where("id = ?", id).First(order).Error; err != nil {
+	if err = Config.DB.Table("orders").Where("id = ?", id).First(order).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func GetAllOrders(order *[]Order) (err error) {
-	if err = Config.DB_orders.Find(order).Error; err != nil {
+	if err = Config.DB.Table("orders").Find(order).Error; err != nil {
 		return err
 	}
 	return nil
 }
 func UpdateOrder(order *Order, id string) (err error) {
 	fmt.Println(order)
-	Config.DB_orders.Save(order)
+	Config.DB.Table("orders").Save(order)
 	return nil
 }
 
 func DeleteOrder(order *Order, id string) (err error) {
-	Config.DB_orders.Where("id = ?", id).Delete(order)
+	Config.DB.Table("orders").Where("id = ?", id).Delete(order)
 	return nil
 }

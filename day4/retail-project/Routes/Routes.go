@@ -24,5 +24,13 @@ func SetupRouter() *gin.Engine {
 		grp2.PATCH("/:id", Controllers.UpdateOrder)
 		grp2.DELETE("/:id", Controllers.DeleteOrder)
 	}
+	grp3 := r.Group("/customer")
+	{
+		grp3.POST("", Controllers.AddCustomer)
+		grp3.GET("/:id", Controllers.GetCustomer)
+		grp3.GET("", Controllers.GetAllCustomers)
+		grp3.PATCH("/:id", Controllers.UpdateCustomer)
+		grp3.DELETE("/:id", Controllers.DeleteCustomer)
+	}
 	return r
 }

@@ -10,16 +10,18 @@ import (
 )
 var err error
 func main() {
-	Config.DB, err = gorm.Open("mysql", Config.DbURL(Config.BuildDBConfig("productsDB2")))
-	Config.DB_orders, err = gorm.Open("mysql", Config.DbURL(Config.BuildDBConfig("ordersDB2")))
+	Config.DB, err = gorm.Open("mysql", Config.DbURL(Config.BuildDBConfig("retailDB3")))
+	//Config.DB_orders, err = gorm.Open("mysql", Config.DbURL(Config.BuildDBConfig("ordersDB2")))
 	if err != nil {
 		fmt.Println("Status:", err)
 	}
 
 	defer Config.DB.Close()
 	Config.DB.AutoMigrate(&Models.Product{})
-	defer Config.DB_orders.Close()
-	Config.DB_orders.AutoMigrate(&Models.Order{})
+	Config.DB.AutoMigrate(&Models.Order{})
+	Config.DB.AutoMigrate(&Models.Customer{})
+	//defer Config.DB_orders.Close()
+	//Config.DB_orders.AutoMigrate(&Models.Order{})
 
 	r := Routes.SetupRouter()
 	//running

@@ -12,7 +12,7 @@ import (
 func AddOrder(c *gin.Context) {
 	var order Models.Order
 	c.BindJSON(&order)
-	order.Status="executed"
+	//order.Status="executed"
 	err := Models.AddOrder(&order)
 	if err != nil {
 		fmt.Println(err.Error())

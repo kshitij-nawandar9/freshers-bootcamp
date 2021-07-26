@@ -9,14 +9,14 @@ import (
 
 
 func AddProduct(product *Product) (err error) {
-	if err = Config.DB.Create(product).Error; err != nil {
+	if err = Config.DB.Table("products").Create(product).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func GetProductByID(product *Product, id string) (err error) {
-	if err = Config.DB.Where("id = ?", id).First(product).Error; err != nil {
+	if err = Config.DB.Table("products").Where("id = ?", id).First(product).Error; err != nil {
 		return err
 	}
 	return nil
@@ -29,13 +29,13 @@ func UpdateProduct(product *Product, id string) (err error) {
 }
 
 func GetAllProducts(product *[]Product) (err error) {
-	if err = Config.DB.Find(product).Error; err != nil {
+	if err = Config.DB.Table("products").Find(product).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func DeleteProduct(product *Product, id string) (err error) {
-	Config.DB.Where("id = ?", id).Delete(product)
+	Config.DB.Table("products").Where("id = ?", id).Delete(product)
 	return nil
 }
