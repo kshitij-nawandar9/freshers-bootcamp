@@ -1,8 +1,8 @@
 //Routes/Routes.go
 package Routes
 import (
+	"github.com/kshitij-nawandar9/freshers-bootcamp/day3/exercise1/Controllers"
 	"github.com/gin-gonic/gin"
-	"github.com/kshitij-nawandar9/freshers-bootcamp/day3/first-api/Controllers"
 )
 //SetupRouter ... Configure routes
 func SetupRouter() *gin.Engine {
