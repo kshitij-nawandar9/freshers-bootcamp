@@ -5,7 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 var DB *gorm.DB
-var DB_orders *gorm.DB
 
 // DBConfig represents db configuration
 type DBConfig struct {

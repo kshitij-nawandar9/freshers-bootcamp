@@ -12,8 +12,8 @@ Service provided to the customer:
 3) Update account and order details
 4) Delete account and order details
 
-A cooldown time of 30sec is provided to the retailer after a customer places any order.
-All the subsequent orders placed within 30sec would be executed after 30sec.
+A cooldown time of 15sec is provided to the retailer after a customer places any order.
+All the subsequent orders placed within 30sec would be executed after 15sec.
 
 If the order quantity is greater than the quanitity available, it will result in a failed order.
 

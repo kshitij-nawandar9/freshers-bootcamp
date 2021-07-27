@@ -31,6 +31,7 @@ func SetupRouter() *gin.Engine {
 		grp3.GET("", Controllers.GetAllCustomers)
 		grp3.PATCH("/:id", Controllers.UpdateCustomer)
 		grp3.DELETE("/:id", Controllers.DeleteCustomer)
+		grp3.GET("/history/:id", Controllers.HistoryCustomer)
 	}
 	return r
 }

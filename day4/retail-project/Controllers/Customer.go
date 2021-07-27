@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Customer"
+	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Order"
 	"net/http"
 )
 
@@ -71,5 +72,22 @@ func DeleteCustomer(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, gin.H{"id" + id: "is deleted"})
+	}
+}
+
+func HistoryCustomer(c *gin.Context) {
+	var customer Customer.TableStruct
+	id := c.Params.ByName("id")
+	err := Customer.GetCustomerByID(&customer, id)
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+	} else {
+		var orders []Order.TableStruct
+		err2 := Order.GetOrderByCustomer(&orders, id)
+		if err2 != nil {
+			c.AbortWithStatus(http.StatusNotFound)
+		} else {
+			c.JSON(http.StatusOK, orders)
+		}
 	}
 }

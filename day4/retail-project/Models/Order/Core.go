@@ -95,3 +95,11 @@ func DeleteOrder(order *TableStruct, id string) (err error) {
 	mutex.Unlock()
 	return nil
 }
+func GetOrderByCustomer(order *[]TableStruct, id string) (err error) {
+	mutex.Lock()
+	if err = Config.DB.Table("orders").Where("customer_id = ?", id).Find(order).Error; err != nil {
+		return err
+	}
+	mutex.Unlock()
+	return nil
+}

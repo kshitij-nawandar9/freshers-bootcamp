@@ -1,3 +1,5 @@
+//All the constants are defined here
+
 package Config
 
 import "time"
