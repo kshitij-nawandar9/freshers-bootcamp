@@ -50,7 +50,7 @@ func UpdateCustomer(c *gin.Context) {
 		c.JSON(http.StatusNotFound, customer)
 	}
 	c.BindJSON(&customer)
-	err = Customer.UpdateCustomer(&customer, id)
+	err = Customer.UpdateCustomer(&customer)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {

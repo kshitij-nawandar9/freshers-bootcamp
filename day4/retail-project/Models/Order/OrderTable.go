@@ -9,8 +9,6 @@ type TableStruct struct {
 	Status string `json:"status"`
 }
 
-
-
 func (b *TableStruct) TableName() string {
 	return "orders"
 }

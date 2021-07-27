@@ -16,6 +16,7 @@ func AddCustomer(customer *TableStruct) (err error) {
 }
 
 func GetCustomerByID(customer *TableStruct, id string) (err error) {
+	fmt.Println("checknig customer")
 	if err = Config.DB.Table("customers").Where("id = ?", id).First(customer).Error; err != nil {
 		return err
 	}
@@ -28,10 +29,10 @@ func GetAllCustomers(customer *[]TableStruct) (err error) {
 	}
 	return nil
 }
-func UpdateCustomer(customer *TableStruct, id string) (err error) {
-	fmt.Println(customer)
+func UpdateCustomer(customer *TableStruct) (err error) {
+	//fmt.Println(customer)
 	Config.DB.Table("customers").Save(customer)
-	fmt.Println(customer)
+	//fmt.Println(customer)
 	return nil
 }
 
