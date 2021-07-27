@@ -1,5 +1,4 @@
-//Models/User.go
-package Models
+package Product
 
 import (
 	"fmt"
@@ -8,34 +7,34 @@ import (
 )
 
 
-func AddProduct(product *Product) (err error) {
+func AddProduct(product *TableStruct) (err error) {
 	if err = Config.DB.Table("products").Create(product).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetProductByID(product *Product, id string) (err error) {
+func GetProductByID(product *TableStruct, id string) (err error) {
 	if err = Config.DB.Table("products").Where("id = ?", id).First(product).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func UpdateProduct(product *Product, id string) (err error) {
+func UpdateProduct(product *TableStruct, id string) (err error) {
 	fmt.Println(product)
 	Config.DB.Save(product)
 	return nil
 }
 
-func GetAllProducts(product *[]Product) (err error) {
+func GetAllProducts(product *[]TableStruct) (err error) {
 	if err = Config.DB.Table("products").Find(product).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteProduct(product *Product, id string) (err error) {
+func DeleteProduct(product *TableStruct, id string) (err error) {
 	Config.DB.Table("products").Where("id = ?", id).Delete(product)
 	return nil
 }

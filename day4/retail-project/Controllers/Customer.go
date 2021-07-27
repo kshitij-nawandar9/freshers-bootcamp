@@ -1,18 +1,17 @@
-//Controllers/User.go
 package Controllers
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models"
+	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Customer"
 	"net/http"
 )
 
 
 func AddCustomer(c *gin.Context) {
-	var customer Models.Customer
+	var customer Customer.TableStruct
 	c.BindJSON(&customer)
-	err := Models.AddCustomer(&customer)
+	err := Customer.AddCustomer(&customer)
 	if err != nil {
 		fmt.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
@@ -22,9 +21,9 @@ func AddCustomer(c *gin.Context) {
 }
 
 func GetCustomer(c *gin.Context) {
-	var customer Models.Customer
+	var customer Customer.TableStruct
 	id := c.Params.ByName("id")
-	err := Models.GetCustomerByID(&customer, id)
+	err := Customer.GetCustomerByID(&customer, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -33,8 +32,8 @@ func GetCustomer(c *gin.Context) {
 }
 
 func GetAllCustomers(c *gin.Context) {
-	var customer []Models.Customer
-	err := Models.GetAllCustomers(&customer)
+	var customer []Customer.TableStruct
+	err := Customer.GetAllCustomers(&customer)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -44,14 +43,14 @@ func GetAllCustomers(c *gin.Context) {
 
 
 func UpdateCustomer(c *gin.Context) {
-	var customer Models.Customer
+	var customer Customer.TableStruct
 	id := c.Params.ByName("id")
-	err := Models.GetCustomerByID(&customer, id)
+	err := Customer.GetCustomerByID(&customer, id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, customer)
 	}
 	c.BindJSON(&customer)
-	err = Models.UpdateCustomer(&customer, id)
+	err = Customer.UpdateCustomer(&customer, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -60,9 +59,9 @@ func UpdateCustomer(c *gin.Context) {
 }
 
 func DeleteCustomer(c *gin.Context) {
-	var customer Models.Customer
+	var customer Customer.TableStruct
 	id := c.Params.ByName("id")
-	err := Models.DeleteCustomer(&customer, id)
+	err := Customer.DeleteCustomer(&customer, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {

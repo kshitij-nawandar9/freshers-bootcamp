@@ -1,19 +1,19 @@
-//Controllers/User.go
 package Controllers
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models"
+	//"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Order"
+	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Order"
 	"net/http"
 )
 
 
 func AddOrder(c *gin.Context) {
-	var order Models.Order
+	var order Order.TableStruct
 	c.BindJSON(&order)
 	//order.Status="executed"
-	err := Models.AddOrder(&order)
+	err := Order.AddOrder(&order)
 	if err != nil {
 		fmt.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
@@ -23,9 +23,9 @@ func AddOrder(c *gin.Context) {
 }
 
 func GetOrder(c *gin.Context) {
-	var order Models.Order
+	var order Order.TableStruct
 	id := c.Params.ByName("id")
-	err := Models.GetOrderByID(&order, id)
+	err := Order.GetOrderByID(&order, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -34,8 +34,8 @@ func GetOrder(c *gin.Context) {
 }
 
 func GetAllOrders(c *gin.Context) {
-	var order []Models.Order
-	err := Models.GetAllOrders(&order)
+	var order []Order.TableStruct
+	err := Order.GetAllOrders(&order)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -45,14 +45,14 @@ func GetAllOrders(c *gin.Context) {
 
 
 func UpdateOrder(c *gin.Context) {
-	var order Models.Order
+	var order Order.TableStruct
 	id := c.Params.ByName("id")
-	err := Models.GetOrderByID(&order, id)
+	err := Order.GetOrderByID(&order, id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, order)
 	}
 	c.BindJSON(&order)
-	err = Models.UpdateOrder(&order, id)
+	err = Order.UpdateOrder(&order)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -61,9 +61,9 @@ func UpdateOrder(c *gin.Context) {
 }
 
 func DeleteOrder(c *gin.Context) {
-	var order Models.Order
+	var order Order.TableStruct
 	id := c.Params.ByName("id")
-	err := Models.DeleteOrder(&order, id)
+	err := Order.DeleteOrder(&order, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
