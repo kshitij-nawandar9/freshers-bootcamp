@@ -7,13 +7,15 @@ import (
 	"net/http"
 )
 
-
 func AddCustomer(c *gin.Context) {
 	var customer Customer.TableStruct
-	c.BindJSON(&customer)
-	err := Customer.AddCustomer(&customer)
+	err := c.BindJSON(&customer)
 	if err != nil {
-		fmt.Println(err.Error())
+		return
+	}
+	errAddCustomer := Customer.AddCustomer(&customer)
+	if errAddCustomer != nil {
+		fmt.Println(errAddCustomer.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, customer)
@@ -45,13 +47,16 @@ func GetAllCustomers(c *gin.Context) {
 func UpdateCustomer(c *gin.Context) {
 	var customer Customer.TableStruct
 	id := c.Params.ByName("id")
-	err := Customer.GetCustomerByID(&customer, id)
-	if err != nil {
+	errGetCustomer := Customer.GetCustomerByID(&customer, id)
+	if errGetCustomer != nil {
 		c.JSON(http.StatusNotFound, customer)
 	}
-	c.BindJSON(&customer)
-	err = Customer.UpdateCustomer(&customer)
+	err := c.BindJSON(&customer)
 	if err != nil {
+		return
+	}
+	errUpdateCustomer := Customer.UpdateCustomer(&customer)
+	if errUpdateCustomer != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, customer)

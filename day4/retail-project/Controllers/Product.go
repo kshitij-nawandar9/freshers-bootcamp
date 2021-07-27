@@ -10,9 +10,12 @@ import (
 
 func AddProduct(c *gin.Context) {
 	var product Product.TableStruct
-	c.BindJSON(&product)
-	err := Product.AddProduct(&product)
+	err := c.BindJSON(&product)
 	if err != nil {
+		return
+	}
+	errAddProduct := Product.AddProduct(&product)
+	if errAddProduct != nil {
 		fmt.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -27,9 +30,12 @@ func UpdateProduct(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusNotFound, product)
 	}
-	c.BindJSON(&product)
-	err = Product.UpdateProduct(&product, id)
-	if err != nil {
+	errBindJSON := c.BindJSON(&product)
+	if errBindJSON != nil {
+		return
+	}
+	errUpdateProduct := Product.UpdateProduct(&product)
+	if errUpdateProduct != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, product)

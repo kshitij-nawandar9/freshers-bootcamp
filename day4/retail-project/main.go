@@ -9,10 +9,13 @@ import (
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Order"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Product"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Routes"
+	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Setup"
 )
+
 var err error
+
 func main() {
-	Config.DB, err = gorm.Open("mysql", Config.DbURL(Config.BuildDBConfig("retailDB3")))
+	Config.DB, err = gorm.Open("mysql", Config.DbURL(Config.BuildDBConfig("retailDB")))
 	if err != nil {
 		fmt.Println("Status:", err)
 	}
@@ -22,10 +25,10 @@ func main() {
 	Config.DB.AutoMigrate(&Order.TableStruct{})
 	Config.DB.AutoMigrate(&Customer.TableStruct{})
 
-	for i:=1;i<Config.NumberOfWorkers;i++{
-		go Order.Worker()
-	}
-	//go Order.Worker()
+	Setup.AlertWorkers()
+	//for i:=1;i< Config.NumberOfWorkers;i++{
+	//	go Order.Worker()
+	//}
 	r := Routes.SetupRouter()
 	//running
 	r.Run()

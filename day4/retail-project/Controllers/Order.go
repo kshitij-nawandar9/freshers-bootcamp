@@ -8,13 +8,14 @@ import (
 	"net/http"
 )
 
-
 func AddOrder(c *gin.Context) {
 	var order Order.TableStruct
-	c.BindJSON(&order)
-	//order.Status="executed"
-	err := Order.AddOrder(&order)
+	err := c.BindJSON(&order)
 	if err != nil {
+		return
+	}
+	errAddOrder := Order.AddOrder(&order)
+	if errAddOrder != nil {
 		fmt.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
@@ -51,9 +52,12 @@ func UpdateOrder(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusNotFound, order)
 	}
-	c.BindJSON(&order)
-	err = Order.UpdateOrder(&order)
-	if err != nil {
+	errBindJSON := c.BindJSON(&order)
+	if errBindJSON != nil {
+		return
+	}
+	errUpdateOrder := Order.UpdateOrder(&order)
+	if errUpdateOrder != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, order)
