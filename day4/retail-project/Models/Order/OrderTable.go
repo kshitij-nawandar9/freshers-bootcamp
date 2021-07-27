@@ -1,8 +1,10 @@
 package Order
 
+import "github.com/jinzhu/gorm"
+
 type TableStruct struct {
-	//gorm.Model
-	Id         uint   `json:"id",gorm:"primaryKey"`
+	gorm.Model
+	//Id         uint   `json:"id",gorm:"primaryKey"`
 	ProductID  uint   `json:"product_id"`
 	CustomerID uint   `json:"customer_id"`
 	Quantity   uint   `json:"quantity"`

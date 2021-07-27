@@ -6,17 +6,15 @@ import (
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Customer"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Product"
 	"strconv"
-	"sync"
 	"time"
 )
 
 //var SleepingTime = time.Duration(15*1000000000).Seconds()
 //var BufferLength int =100
 var orderChannel = make(chan *TableStruct,Config.BufferLength)
-var mutex = &sync.Mutex{}
 
+//workers which continuously listen to channels and execute orders as soon as the waiting period is over
 func Worker (){
-	//workers which continuously listen to channels and execute orders as soon as the waiting period is over
 	for{
 		select {
 		case order:=<-orderChannel:
@@ -36,8 +34,8 @@ func Worker (){
 				//check if the order quantity is available, if not then update order status as failed
 				productID :=strconv.FormatUint(uint64(order.ProductID),10)
 				product := &Product.TableStruct{}
-				err:=Product.GetProductByID(product,productID)
-				if err!=nil{
+				errProductID:=Product.GetProductByID(product,productID)
+				if errProductID!=nil{
 					return
 				}
 				if product.Quantity<order.Quantity{
@@ -45,61 +43,59 @@ func Worker (){
 				}else{
 					order.Status="executed"
 					product.Quantity-=order.Quantity
-					Product.UpdateProduct(product)
+					err := Product.UpdateProduct(product)
+					if err != nil {
+						return
+					}
 				}
-				UpdateOrder(order)
+				err := UpdateOrder(order)
+				if err != nil {
+					return
+				}
 				customer.UpdatedAt=time.Now()
-				Customer.UpdateCustomer(customer)
+				errUpdateCustomer := Customer.UpdateCustomer(customer)
+				if errUpdateCustomer != nil {
+					return
+				}
 			}
 		}
 	}
 }
 func AddOrder(order *TableStruct) (err error) {
-	mutex.Lock()
+	order.Status="order placed"
 	if err = Config.DB.Table("orders").Create(order).Error; err != nil {
 		return err
 	}
-	mutex.Unlock()
 	orderChannel<-order
 	return nil
 }
 
 func GetOrderByID(order *TableStruct, id string) (err error) {
-	mutex.Lock()
 	if err = Config.DB.Table("orders").Where("id = ?", id).First(order).Error; err != nil {
 		return err
 	}
-	mutex.Unlock()
 	return nil
 }
 
 func GetAllOrders(order *[]TableStruct) (err error) {
-	mutex.Lock()
 	if err = Config.DB.Table("orders").Find(order).Error; err != nil {
 		return err
 	}
-	mutex.Unlock()
 	return nil
 }
 func UpdateOrder(order *TableStruct) (err error) {
 	//fmt.Println(order)
-	mutex.Lock()
 	Config.DB.Table("orders").Save(order)
-	mutex.Unlock()
 	return nil
 }
 
 func DeleteOrder(order *TableStruct, id string) (err error) {
-	mutex.Lock()
 	Config.DB.Table("orders").Where("id = ?", id).Delete(order)
-	mutex.Unlock()
 	return nil
 }
 func GetOrderByCustomer(order *[]TableStruct, id string) (err error) {
-	mutex.Lock()
 	if err = Config.DB.Table("orders").Where("customer_id = ?", id).Find(order).Error; err != nil {
 		return err
 	}
-	mutex.Unlock()
 	return nil
 }
