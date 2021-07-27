@@ -1,7 +1,6 @@
 package Customer
 
 import (
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Config"
 	"time"
@@ -16,7 +15,6 @@ func AddCustomer(customer *TableStruct) (err error) {
 }
 
 func GetCustomerByID(customer *TableStruct, id string) (err error) {
-	fmt.Println("checknig customer")
 	if err = Config.DB.Table("customers").Where("id = ?", id).First(customer).Error; err != nil {
 		return err
 	}

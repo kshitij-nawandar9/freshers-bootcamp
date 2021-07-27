@@ -22,7 +22,12 @@ func main() {
 	Config.DB.AutoMigrate(&Order.TableStruct{})
 	Config.DB.AutoMigrate(&Customer.TableStruct{})
 
+	for i:=1;i<Config.NumberOfWorkers;i++{
+		go Order.Worker()
+	}
+	//go Order.Worker()
 	r := Routes.SetupRouter()
 	//running
 	r.Run()
+
 }

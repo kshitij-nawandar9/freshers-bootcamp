@@ -1,64 +1,59 @@
 package Order
 
 import (
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Config"
 	"github.com/kshitij-nawandar9/freshers-bootcamp/day4/retail-project/Models/Customer"
 	"strconv"
+	"sync"
 	"time"
 )
 
 var timeStampMap = make(map[uint]int64)
-var orderChannel = make(chan *TableStruct)
-var sleepingTime = time.Duration(15*1000000000).Seconds()
-//var sleepingTime = time.Duration(1).Seconds()*30
+var orderChannel = make(chan *TableStruct,Config.BufferLength)
 
-func ExecuteOrder(order *TableStruct,customer *Customer.TableStruct,waitingTime int){
-	fmt.Println("check4")
-	time.Sleep(time.Second*time.Duration(waitingTime))
-	order.Status="executed"
-	UpdateOrder(order)
-	customer.UpdatedAt=time.Now()
-	Customer.UpdateCustomer(customer)
-}
-func ManageOrder(){
-	fmt.Println("check2")
-	order :=<-orderChannel
-	customerID:=strconv.FormatUint(uint64(order.CustomerID), 10)
-	fmt.Println(customerID)
-	customer := &Customer.TableStruct{}
-	err := Customer.GetCustomerByID(customer, customerID)
-	if err != nil {
-		return
+func Worker (){
+	var mutex = &sync.Mutex{}
+	for{
+		//fmt.Println("worker ready, jobs left : ",len(orderChannel))
+		select {
+		case order:=<-orderChannel:
+			//fmt.Println("check3")
+			mutex.Lock()
+			customerID:=strconv.FormatUint(uint64(order.CustomerID), 10)
+			customer := &Customer.TableStruct{}
+			err := Customer.GetCustomerByID(customer, customerID)
+			if err != nil {
+				return
+			}
+			LastOrderByCustomer:=customer.UpdatedAt
+			waitingTime:=time.Now().Sub(LastOrderByCustomer).Seconds()
+			if waitingTime<Config.SleepingTime{
+				orderChannel<-order
+				//fmt.Println("pushing order to channel",waitingTime,Config.SleepingTime,order.Id)
+			}else{
+				order.Status="executed"
+				UpdateOrder(order)
+				customer.UpdatedAt=time.Now()
+				Customer.UpdateCustomer(customer)
+			}
+			mutex.Unlock()
+		//default:
+		//	time.Sleep(time.Second)
+		}
 	}
-	LastOrderByCustomer:=customer.UpdatedAt
-	waitingTime:=time.Now().Sub(LastOrderByCustomer).Seconds()
-	fmt.Println("check3",waitingTime,sleepingTime)
-	if waitingTime<sleepingTime{
-		go ExecuteOrder(order,customer,int(sleepingTime-waitingTime))
-		//orderChannel<-order
-	}else{
-		fmt.Println("check5")
-		order.Status="executed"
-		UpdateOrder(order)
-		customer.UpdatedAt=time.Now()
-		Customer.UpdateCustomer(customer)
-	}
-	fmt.Println("check6")
-	fmt.Println("order executed at : ",customer.UpdatedAt)
 }
 func AddOrder(order *TableStruct) (err error) {
-	fmt.Println("check1")
+	//fmt.Println("check1")
 	if err = Config.DB.Table("orders").Create(order).Error; err != nil {
 		return err
 	}
-	go func(order *TableStruct){
-		orderChannel<-order
-	}(order)
-	ManageOrder()
-	//orderChannel<-order
-
+	//go func(order *TableStruct){
+	//	orderChannel<-order
+	//}(order)
+	//ManageOrder()
+	orderChannel<-order
+	//fmt.Println("check2")
 	return nil
 }
 
@@ -76,7 +71,7 @@ func GetAllOrders(order *[]TableStruct) (err error) {
 	return nil
 }
 func UpdateOrder(order *TableStruct) (err error) {
-	fmt.Println(order)
+	//fmt.Println(order)
 	Config.DB.Table("orders").Save(order)
 	return nil
 }
